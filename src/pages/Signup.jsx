@@ -5,9 +5,55 @@ import { Link } from "react-router-dom";
 
 const Signup = () => {
   const { passwordShown, togglePassword, language, languageToggle } = useGlobal();
+  // sign up Validation
+  const initialValues = {
+    name: "",
+    surname: "",
+    email: "",
+    password: "",
+    checkbox: false,
+  };
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formValues));
+  };
+  const validate = (values) => {
+    const errors = {};
+    const regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (!values.name || values.name < 2) {
+      errors.name = "Must contain at least 2 alphabets";
+    }
+    if (!values.surname || values.surname < 2) {
+      errors.surname = "Must contain at least 2 alphabets";
+    }
+    if (!values.email) {
+      errors.email = "Please enter your user name.";
+    } else if (!regex.test(values.email)) {
+      errors.email = "this is not a valid email format";
+    }
+    if (!values.password) {
+      errors.password = "password is required";
+    } else if (values.password < 4) {
+      errors.password =
+        "Your password must contain at least 8 alphanumeric characters";
+    }
+    if (!values.checkbox) {
+      errors.checkbox =
+        "You must accept the Membership Agreement and Privacy Policy";
+    }
+    return errors;
+  };
+
   useEffect(() => {
-    document.title = "Sign up"
-  }, [])
+    document.title = "Sign up";
+  }, []);
+
   return (
     <div className='bg-gray-50 pb-[30px] mdx:min-h-[calc(100vh_-_59px)]'>
       {/* Top Bar */}
@@ -31,54 +77,96 @@ const Signup = () => {
               Sign up
             </h1>
             {/* Login form */}
-            <form action=''>
+            <form action='' onSubmit={handleSubmit}>
               {/* name */}
               <div className='flex justify-between mb-[15px]'>
                 <div className='w-[calc(50%_-_5px)] md:w-[calc(50%_-_15px)]'>
                   <div className=' relative group'>
+                    <label
+                      htmlFor='name'
+                      className={
+                        !formErrors.name
+                          ? formValues.name
+                            ? "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#666]"
+                            : "transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]"
+                          : "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#eb3b2e]"
+                      }>
+                      Name
+                    </label>
                     <input
                       type='text'
                       id='name'
-                      required
-                      className='peer h-[50px] mdx:w-full text-sm pl-2 focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none'
+                      name='name'
+                      value={formValues.name}
+                      onChange={handleChange}
+                      className={
+                        !formErrors.name
+                          ? "w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none"
+                          : "w-full h-[50px] px-4 text-sm peer border-[#f00] border text-[#36454d] rounded-sm outline-none bg-[#fff1f1]"
+                      }
                     />
-                    <label
-                      htmlFor='name'
-                      className='transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]'>
-                      Name
-                    </label>
                   </div>
+                  <p className='text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                    {formErrors.name}
+                  </p>
                 </div>
                 <div className='w-[calc(50%_-_5px)] md:w-[calc(50%_-_15px)]'>
                   <div className='relative group'>
+                    <label
+                      htmlFor='surname'
+                      className={
+                        !formErrors.surname
+                          ? formValues.surname
+                            ? "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#666]"
+                            : "transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]"
+                          : "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#eb3b2e]"
+                      }>
+                      Surname
+                    </label>
                     <input
                       type='text'
                       id='surname'
-                      required
-                      className='peer h-[50px] w-full text-sm pl-2 focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none'
+                      name='surname'
+                      value={formValues.surname}
+                      onChange={handleChange}
+                      className={
+                        !formErrors.surname
+                          ? "w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none"
+                          : "w-full h-[50px] px-4 text-sm peer border-[#f00] border text-[#36454d] rounded-sm outline-none bg-[#fff1f1]"
+                      }
                     />
-                    <label
-                      htmlFor='surname'
-                      className='transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]'>
-                      Surname
-                    </label>
                   </div>
+                  <p className='text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                    {formErrors.surname}
+                  </p>
                 </div>
               </div>
               {/* E-mail */}
               <div className='mb-[15px]'>
                 <div className='relative group'>
-                  <input
-                    type='text'
-                    id='username'
-                    required
-                    className='peer w-full h-[50px] px-4 text-sm focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none'
-                  />
                   <label
-                    htmlFor='username'
-                    className='transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]'>
+                    htmlFor='email'
+                    className={
+                      !formErrors.email
+                        ? formValues.email
+                          ? "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#666]"
+                          : "transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]"
+                        : "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#eb3b2e]"
+                    }>
                     E-mail
                   </label>
+                  <input
+                    type='text'
+                    id='email'
+                    name='email'
+                    value={formValues.email}
+                    onChange={handleChange}
+                    className={
+                      !formErrors.email
+                        ? "w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none"
+                        : "w-full h-[50px] px-4 text-sm peer border-[#f00] border text-[#36454d] rounded-sm outline-none bg-[#fff1f1]"
+                    }
+                  />
                   <div className='info absolute right-4 top-4 cursor-pointer'>
                     <img
                       src={require("../images/info.png")}
@@ -95,21 +183,36 @@ const Signup = () => {
                     </div>
                   </div>
                 </div>
+                <p className='text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                  {formErrors.email}
+                </p>
               </div>
               {/* password */}
               <div className='mb-[15px]'>
                 <div className='relative group'>
+                  <label
+                    htmlFor='password'
+                    className={
+                      !formErrors.password
+                        ? formValues.password
+                          ? "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#666]"
+                          : "transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]"
+                        : "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#eb3b2e]"
+                    }>
+                    Password
+                  </label>
                   <input
                     type={passwordShown ? "text" : "password"}
                     id='password'
-                    required
-                    className='peer w-full h-[50px] px-4 text-sm focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none'
+                    name='password'
+                    value={formValues.password}
+                    onChange={handleChange}
+                    className={
+                      !formErrors.password
+                        ? "w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none"
+                        : "w-full h-[50px] px-4 text-sm peer border-[#f00] border text-[#36454d] rounded-sm outline-none bg-[#fff1f1]"
+                    }
                   />
-                  <label
-                    htmlFor='username'
-                    className='transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]'>
-                    Password
-                  </label>
                   <div
                     className='absolute right-4 top-4 cursor-pointer'
                     onClick={togglePassword}>
@@ -122,13 +225,17 @@ const Signup = () => {
                     />
                   </div>
                 </div>
+                <p className='text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                  {formErrors.password}
+                </p>
               </div>
               {/* checkboxes */}
               <div className='mb-5 text-sm mdx:text-xs max-w-[365px]'>
                 <div className='relative'>
                   <label htmlFor='subscription'>
                     <input
-                      required
+                      value={formValues.checkbox}
+                      onChange={handleChange}
                       className='absolute rounded-none border outline-none top-[4px]'
                       type='checkbox'
                       id='subscription'
@@ -142,6 +249,9 @@ const Signup = () => {
                     </span>
                   </label>
                 </div>
+                <p className='ml-5 text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                  {formErrors.checkbox}
+                </p>
                 <div className='relative'>
                   <label htmlFor='commercial'>
                     <input

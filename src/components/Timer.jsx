@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useGlobal } from "../context/context";
 
 const Timer = () => {

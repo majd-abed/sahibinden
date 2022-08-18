@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Timer } from "../components";
 import QrCode from "../components/QrCode";
 import { useGlobal } from "../context/context";
@@ -19,7 +19,30 @@ const Login = () => {
   useEffect(() => {
     document.title = "sahibinden.com user login";
   }, []);
-
+  // Login Validation
+  const initialValues = { email: "", password: "" };
+  const [formValues, setFormValues] = useState(initialValues);
+  const [formErrors, setFormErrors] = useState({});
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues({ ...formValues, [name]: value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setFormErrors(validate(formValues));
+  };
+  const validate = (values) => {
+    const errors = {};
+    if (!values.email) {
+      errors.email = "Please enter your user name.";
+    }
+    if (!values.password) {
+      errors.password = "password is required";
+    } else if (values.password < 4) {
+      errors.password = "password must be more that 4 characters ";
+    }
+    return errors;
+  };
   return (
     <div className='bg-gray-50 pb-[30px] mdx:min-h-[calc(100vh_-_59px)]'>
       {/* Top Bar */}
@@ -75,37 +98,67 @@ const Login = () => {
               </div>
             </div>
             {/* Login form */}
-            <form action='' style={{ display: qrToggle ? "none" : "block" }}>
+            <form
+              action=''
+              onSubmit={handleSubmit}
+              style={{ display: qrToggle ? "none" : "block" }}>
               {/* E-mail */}
               <div className='mb-[15px]'>
                 <div className=' relative group'>
-                  <input
-                    type='text'
-                    id='username'
-                    required
-                    className='w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none'
-                  />
                   <label
-                    htmlFor='username'
-                    className='transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]'>
+                    htmlFor='email'
+                    className={
+                      !formErrors.email
+                        ? formValues.email
+                          ? "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#666]"
+                          : "transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]"
+                        : "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#eb3b2e]"
+                    }>
                     E-mail
                   </label>
+                  <input
+                    type='text'
+                    id='email'
+                    name='email'
+                    value={formValues.email}
+                    onChange={handleChange}
+                    className={
+                      !formErrors.email
+                        ? "w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none"
+                        : "w-full h-[50px] px-4 text-sm peer border-[#f00] border text-[#36454d] rounded-sm outline-none bg-[#fff1f1]"
+                    }
+                  />
                 </div>
+                <p className='text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                  {formErrors.email}
+                </p>
               </div>
               {/* password */}
               <div className='mb-[15px]'>
                 <div className='relative group'>
+                  <label
+                    htmlFor='password'
+                    className={
+                      !formErrors.password
+                        ? formValues.password
+                          ? "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#666]"
+                          : "transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]"
+                        : "transform transition-all absolute top-8 left-0 h-full flex items-center pl-4 text-[10px] -translate-y-full text-[#eb3b2e]"
+                    }>
+                    Password
+                  </label>
                   <input
                     type={passwordShown ? "text" : "password"}
                     id='password'
-                    required
-                    className='w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none'
+                    name='password'
+                    value={formValues.password}
+                    onChange={handleChange}
+                    className={
+                      !formErrors.password
+                        ? "w-full h-[50px] px-4 text-sm peer focus:ring focus:border-blue-600 border border-[#ccc] text-[#36454d] rounded-sm outline-none"
+                        : "w-full h-[50px] px-4 text-sm peer border-[#f00] border text-[#36454d] rounded-sm outline-none bg-[#fff1f1]"
+                    }
                   />
-                  <label
-                    htmlFor='username'
-                    className='transform transition-all absolute top-0 left-0 h-full flex items-center pl-4 text-sm group-focus-within:text-[10px] peer-valid:text-[10px] group-focus-within:top-8 peer-valid:top-8 group-focus-within:-translate-y-full peer-valid:-translate-y-full text-[#666]'>
-                    Password
-                  </label>
                   <div
                     className='absolute right-4 top-4 cursor-pointer'
                     onClick={togglePassword}>
@@ -118,6 +171,9 @@ const Login = () => {
                     />
                   </div>
                 </div>
+                <p className='text-xs text-[#eb3b2e] font-[8px] pt-1'>
+                  {formErrors.password}
+                </p>
               </div>
               {/* password options */}
               <div className='flex justify-between mb-[15px]'>

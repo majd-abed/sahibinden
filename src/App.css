@@ -1,0 +1,35 @@
+.header-logo{
+  text-indent: -9999px;
+  background-image: url(images/header.png);
+  background-position: -254px -88px;
+  width: 160px;
+  height: 34px;
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+}
+/* Arrow head for signup info */
+.arrow-info::after {
+  content: "";
+  position: absolute;
+  top: -20px;
+  right: 10px;
+  margin-left: -5px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent white transparent;
+}
+.arrow-info::before {
+  content: "";
+  position: absolute;
+  top: -21px;
+  right:10px;
+  margin-left: -5px;
+  border-width: 10px;
+  border-style: solid;
+  border-color: transparent transparent #dedede transparent;
+}
+/* info hover */
+.info:hover .arrow-info{
+  display: block;
+}
